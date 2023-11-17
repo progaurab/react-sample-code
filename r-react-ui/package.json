@@ -1,0 +1,45 @@
+{
+  "name": "raptor-react-ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@azure/msal-browser": "^3.5.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.19.0",
+    "react-router-dom": "^6.19.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start:dev": "REACT_APP_ENV=development react-scripts start",
+    "start:qa": "REACT_APP_ENV=qa react-scripts start",
+    "start:prod": "REACT_APP_ENV=production react-scripts start",
+    "build": "react-scripts build",
+    "build:dev": "REACT_APP_ENV=development react-scripts build",
+    "build:qa": "REACT_APP_ENV=qa react-scripts build",
+    "build:prod": "REACT_APP_ENV=production react-scripts build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
