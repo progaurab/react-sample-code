@@ -1,6 +1,34 @@
 npm install react react-dom react-scripts @azure/msal-browser
 
+______
 
+import { useEffect, useState } from 'react';
+import { authenticate } from './auth'; // Import your authentication function
+
+const App = () => {
+  const [accessToken, setAccessToken] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await authenticate();
+      if (token) {
+        setAccessToken(token);
+        // Now you can use the accessToken to make API calls
+        // For example, fetch Azure AD groups using the token
+        const groups = await fetchAzureADGroups(token);
+        if (groups) {
+          console.log('Azure AD Groups:', groups);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Rest of your component code...
+};
+
+____
 
 import { PublicClientApplication } from '@azure/msal-browser';
 
