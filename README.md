@@ -1,4 +1,99 @@
 
+
+const ExcelJS = require('exceljs');
+const moment = require('moment');
+
+function exportToExcel(data) {
+  // Create a new workbook and add a worksheet
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Transactions');
+
+  // Define column headers and column styles
+  const columns = [
+    { header: 'GUT_MATCH', key: 'GUT_MATCH' },
+    { header: 'ACCOUNT', key: 'ACCOUNT', type: 'number' },
+    { header: 'DATE', key: 'DATE' },
+    { header: 'TIME', key: 'TIME' },
+    { header: 'TRANSACTION_CATEGORY', key: 'TRANSACTION_CATEGORY' },
+    { header: 'DR_CR', key: 'DR_CR' },
+    { header: 'SUCCESS', key: 'SUCCESS' },
+    { header: 'AMOUNT', key: 'AMOUNT', type: 'currency' },
+    { header: 'CASH', key: 'CASH', type: 'currency' },
+    { header: 'THIS_PARTY', key: 'THIS_PARTY' },
+    { header: 'OTHER_PARTY', key: 'OTHER_PARTY' },
+    { header: 'OTHER_PARTY_ADDRESS', key: 'OTHER_PARTY_ADDRESS' },
+    { header: 'OTHER_PARTY_CONTACT', key: 'OTHER_PARTY_CONTACT' },
+    { header: 'OTHER_PARTY_DOB', key: 'OTHER_PARTY_DOB' },
+    { header: 'OTHER_PARTY_KYC', key: 'OTHER_PARTY_KYC' },
+    { header: 'OTHER_PARTY_OCCUPATION', key: 'OTHER_PARTY_OCCUPATION' },
+    { header: 'REFERENCE', key: 'REFERENCE' },
+    { header: 'TRANSFER_BSB', key: 'TRANSFER_BSB' },
+    { header: 'TRANSFER_ACCOUNT', key: 'TRANSFER_ACCOUNT' },
+    { header: 'CARD_CRN', key: 'CARD_CRN' },
+    { header: 'PAYID', key: 'PAYID' },
+    { header: 'FI_NAME', key: 'FI_NAME' },
+    { header: 'ORIGINAL_NARRATIVE', key: 'ORIGINAL_NARRATIVE' },
+    { header: 'TRACE_ID', key: 'TRACE_ID' },
+    { header: 'TRANSACTION_TYPE', key: 'TRANSACTION_TYPE' },
+    { header: 'PROCESSING_TYPE', key: 'PROCESSING_TYPE' },
+    { header: 'MCC', key: 'MCC' },
+    { header: 'POS_ENTRY', key: 'POS_ENTRY' },
+    { header: 'BRANCH_ID', key: 'BRANCH_ID' },
+    { header: 'BRANCH_NAME', key: 'BRANCH_NAME' },
+    { header: 'COUNTRY_ALPHA', key: 'COUNTRY_ALPHA' },
+    { header: 'INTERNATIONAL', key: 'INTERNATIONAL' },
+    { header: 'IP_ADDRESS', key: 'IP_ADDRESS' },
+    { header: 'GEO_STATE', key: 'GEO_STATE' },
+    { header: 'GEO_CITY', key: 'GEO_CITY' },
+    { header: 'GEO_REGION', key: 'GEO_REGION' },
+    { header: 'GEO_COUNTRY', key: 'GEO_COUNTRY' }
+  ];
+
+  // Apply column styles
+  columns.forEach((col, index) => {
+    const style = index % 2 === 0 ? { fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: '33BBFF' } } } : {};
+    worksheet.getColumn(col.key).style = style;
+  });
+
+  // Add data to the worksheet
+  worksheet.addRows(data);
+
+  // Format specific columns
+  worksheet.getColumn('AMOUNT').numFmt = '"$"#,##0.00';
+  worksheet.getColumn('CASH').numFmt = '"$"#,##0.00';
+  worksheet.getColumn('DATE').eachCell({ includeEmpty: true }, (cell) => {
+    if (moment(cell.value, 'DD/MM/YYYY', true).isValid()) {
+      cell.value = moment(cell.value, 'DD/MM/YYYY').toDate();
+      cell.numFmt = 'DD/MM/YYYY';
+    }
+  });
+
+  // Auto-adjust column widths
+  worksheet.columns.forEach((col) => {
+    col.width = col.header.length < 12 ? 12 : col.header.length;
+  });
+
+  // Make header bold
+  worksheet.getRow(1).font = { bold: true };
+
+  // Save the workbook
+  workbook.xlsx.writeFile('output.xlsx').then(() => {
+    console.log('Excel file generated successfully!');
+  });
+}
+
+// Example usage
+const apiResponse = {
+  // ... (your API response here)
+};
+
+exportToExcel([apiResponse]);
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%٪
 {
 
 لا
