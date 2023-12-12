@@ -1,4 +1,444 @@
+const handleDataandExport async (data, values) =>
 
+const today new Date();
+
+const yyyy= today.getFullYear();
+
+let mm= today.getMonth() + 1; // Months start at el
+
+let dd today.getDate();
+
+if (dd < 10) dd = "0" + dd;
+
+if (mm < 10) mm = "e" + mm;
+
+const formattedToday dd.toString() + mm.tostring() + yyyy;
+
+if (data && data.length) {
+
+if (values.searchoption === "accountNumber")
+
+const workbook new Excels.Workbook();
+
+const sheetName = values.searchValue;
+
+const worksheet workbook.addworksheet(sheetName, (
+
+views: [{ state: "frozen", ySplit: 1 }],
+
+});
+
+const header Row = columnTTTDefs.map((column) => column.headerName);
+
+const headercellStyle = {
+
+fill: (
+
+type: "pattern",
+
+pattern: "solid",
+
+fgcolor: (argb: "4F81BD" }, //blue DCE6F1
+
+},
+
+font: {
+
+bold: true,
+
+color: (argb: "FFFFFFFF" }, //white
+
+},
+
+};
+
+const headerRowCell worksheet.addRow(headerRow); headerRowCell.eachCell((cell) => {
+
+cell.style headerCellStyle;
+
+});
+
+worksheet.autoFilter = (
+
+}; }, column: columnTTTDefs.length,
+
+from: (
+
+row: 1,
+
+column: 1,
+
+to: {
+
+row: 1,
+
+const datacellstyle = {
+
+};
+
+fill: (
+
+type: "pattern",
+
+pattern: "solid",
+
+I
+
+fgcolor: { argb: "ffffff" }, //light blue
+
+data.forEach((row, rowIndex) => {
+
+const dataRow = columnTTTDefs.map((column) => (
+
+const field = column.field;
+
+));
+
+const value = row[field];
+
+return value;
+
+const dataRowCell worksheet.addRow(dataRow); dataRowCell.eachcell((cell) => {
+
+cell.style datacellstyle; });
+
+if (rowIndex % 2 === 0) (
+
+const alternateRowCellstyle {
+
+fill: {
+
+type: "pattern",
+
+pattern: "solid
+
+",
+
+
+fgcolor: (argb: "C509F1" }, //ROW WHITE
+
+dataRowCell.eachCell((cell) => {
+
+cell.style alternateRowCellstyle;
+
+});
+
+});
+
+const amountColumnIndex columnTTTDefs.findIndex( (column) => column.field === "AMOUNT"
+
+if (amountColumnIndex >= 0) (
+
+const amountColumn = worksheet.getColumn(amountColumnIndex + 1); amountColumn.eachcell((cell) => {
+
+cell.numFmt = "$"#,##0.00";
+
+});
+
+}
+
+const cashColumnIndex columnTTTDefs.findIndex( (column) => column.field "CASH" I
+
+); if (cashColumnIndex >= 0) {
+
+const cashColumn worksheet.getColumn(cashColumnIndex + 1); cashColumn.eachCell((cell) => { cell.numFmt="$"#,##0.00";
+
+});
+
+}
+
+const dateColumnIndex columnTTTDefs.findIndex(
+
+(column) => column.field "DATE"
+
+); if (dateColumnIndex >= 0) {
+
+const dateColumn worksheet.getColumn(dateColumnIndex + 1);
+
+dateColumn.eachCell((includeEmpty: true), (cell, rowNumber) => {
+
+if (rowNumber > 1)(
+
+cell.numFmt = "dd/mm/yyyy"
+
+const dateParts = cell.value.split('/');
+
+const datevalue = new Date("${dateParts[0])/$(dateParts[1])/$(dateParts[2]}'); if(lisNaN(dateValue.getTime())){
+
+cell.value = datevalue;
+
+cell.style = {numFmt:"dd/mm/yyyy"};
+
+));
+
+}
+
+const accountColumnIndex ); (column) => column.field columnTTTDefs.findIndex( "ACCOUNT"
+
+if (accountColumnIndex >= 0) {
+
+const accountColumn worksheet.getColumn(accountColumnIndex + 1); accountColumn.eachcell((cell,rowNumber) => {
+
+if(rowNumber> 1)
+
+});
+
+cell.numFmt = "0";
+
+cell.value = Number(cell.value);
+
+
+worksheet.columns.forEach((column, i) => {
+
+var maxLength = 0;
+
+column.eachCell((includeEmpty: true), function (cell){
+
+var columnLength = cell.value ? cell.value.toString().length: 10;
+
+if(columnlength > gth > maxLength) {
+
+maxLength columnLength;
+
+
+});
+
+column.width = maxLength < 107 10: maxLength;
+
+});
+
+000
+
+const createOuterBorder = (worksheet, start (row:1,col:1), end-(row:1, col:1), borderwidth="medium")> (
+
+const borderstyle (
+
+style: borderwidth
+
+for(let i-start.row; i < end.row; i++) (
+
+const topBordercell worksheet.getcell(i, start.col);
+
+const bottomBorderCell worksheet.getCell(i, end.col);
+
+topBordercell.border == (
+
+};
+
+...topBordercell.border,
+
+top: borderstyle
+
+bottomBordercell.border = ( ...bottomBorderCell.border,
+
+bottom:borderStyle
+
+}; const buffer await workbook.xlsx.writeBuffer();
+
+)
+
+const blob new Blob([buffer], ( type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+}); saveAs (blob, values.searchvalue++ formattedToday".xlsx");
+
+if (values.searchoption const workbook new Excells.Workbook(); "customertiumber") (
+
+const sheet Name values.searchValue;
+
+const worksheet workbook.addworksheet (sheetName, ( views: [[state: "frozen", ySplit: 1)],
+
+});
+
+const headerRow columnTTTCustDefs.map((column) -> column.headerName);
+
+const headerCellstyle = (
+
+);
+
+fill: (
+
+},
+
+type: "pattern",
+
+pattern: "solid",
+
+fgcolor: (argb: "4F8180" }, //blue
+
+font: (
+
+bold: true,
+
+color: (argb: "FFFFFFFF" }, //white
+
+const headerRowCell worksheet.addRow(headerRow); header RowCell.eachcell((cell) => (
+
+cell.style headerCellstyle;
+
+worksheet.autoFilter = (
+
+from: (
+
+row: 1,
+
+column: 1,
+
+to: (
+
+row: 1,
+
+column: columnTTTCustDefs.length,
+
+},
+
+};
+
+const datacellstyle (
+
+}; data.forEach((row, rowIndex)>(
+
+fill: (
+
+type: "pattern",
+
+pattern: "solid",
+
+fgColor: argb: "FFFFFF" }, //light 
+
+
+),
+
+data.forEach((row, rowIndex)>(
+
+const dataRow columnTTTCustDefs.map((column) => (
+
+const field column.field;
+
+const value row[field];
+
+return value;
+
+});
+
+const dataRowCell = worksheet.addRow(dataRow);
+
+dataRowCell.eachCell((cell) => { cell.style datacellstyle;
+
+});
+
+if (rowIndex % 2 == 0) {
+
+} });
+
+const alternateRowCellStyle = {
+
+};
+
+fill: {
+
+type: "pattern",
+
+pattern: "solid",
+
+fgColor: { argb: "C5D9F1" }, //light gray
+
+dataRowCell.eachCell((cell) => {
+
+}); cell.style alternateRowCellstyle;
+
+const amountColumnIndex columnTTTCustDefs.findIndex( (column) => column.field "AMOUNT" );
+
+if (amountColumnIndex >= 0) {
+
+const amountColumn worksheet.getColumn(amountColumnIndex + 1);
+
+amountColumn.eachCell((cell) => {
+
+});
+
+cell.numFmt = "$"#,##0.00";
+
+const cashcolumnIndex columiTTTCustDefs.findIndex( (column) column.field "CASH"
+
+If (cashColumnIndex > 0) (
+
+const cashcolumn worksheet.getColumn(cashColumnIndex + 1); cashcolumn.eachcell((cell)-> ( cell.numfmt"5",##0.00";
+
+const dateColumnIndex columnTTTCustDefs.findIndex( (column) => column.field "DATE"
+
+); if (dateColumnIndex >= 0) {
+
+const dateColumn worksheet.getColumn(dateColumnIndex + 1); datecolumn.eachCell((includeEmpty: true), (cell, rowfiumber) =>
+
+if (rowNumber > 1)(
+
+cell.numFmt "dd/mm/yyyy" const dateparts cell.value.split('/');
+
+const datevalue = new Date("$(dateParts[0])/S(dateParts[1])/$(dateParts[2]}); I
+
+if(lisNaN(dateValue.getTime()))(
+
+cell.value dateValue;
+
+cell.style (numFmt:"dd/mm/yyyy");
+
+}
+
+});
+
+}
+
+const accountColumnIndex columnTTTCustDefs.findIndex( (column) => column.field == "ACCOUNT"
+
+);
+
+if (accountColumnIndex >= 0) {
+
+const accountColumn = worksheet.getColumn(accountColumnIndex + 1); accountColumn.eachcell((cell,rowNumber) => {
+
+if (rowNumber > 1)
+
+cell.numFmt = "0";
+
+celi.value = Number(cell.value);
+
+});
+
+)
+
+I
+
+worksheet.columns.forEach((column, 1) => {
+
+var maxlength = 0;
+
+column.eachCell((includeEmpty: true), function (cell){
+
+});
+
+});
+
+var columnLength cell.value? cell.value.toString().length: 10;
+
+if(columnLength > maxLength) {
+
+}
+
+maxlength columnLength;
+
+column.width maxlength < 107 10 maxlength;
+
+const buffer = await, workbook.xlsx.writeBuffer();
+
+const blob = new Blob([buffer], {
+
+}); type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+saveAs (blob, values.searchvalue + "_" + formattedToday + ".xlsx");
+}}}
+
+
+_____________^^^_________
 const ExcelJS = require('exceljs');
 const moment = require('moment');
 
