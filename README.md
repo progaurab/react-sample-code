@@ -1,4 +1,87 @@
 
+{
+
+لا
+
+"GUT_MATCH": "RETAIL MATCH",
+
+"ACCOUNT": "469892624",
+
+"DATE": "10/12/2023",
+
+"TIME": "10:47:36",
+
+"TRANSACTION_CATEGORY": "NPP Debit",
+
+"DR_CR": "D",
+
+"SUCCESS": "Y",
+
+"AMOUNT": 220,
+
+"CASH": 0,
+
+"THIS_PARTY": "CATALANO JORDAN ALAIN
+
+"OTHER_PARTY" "Nyna Maсяцаrrіе
+
+"OTHER PARTY_ADDRESS": "" "OTHER_PARTY_CONTACT":"
+
+"OTHER_PARTY_DOB": "",
+
+"OTHER_PARTY_KYC":"",
+
+"OTHER PARTY_OCCUPATION":
+
+"REFERENCE": "Sat and shopping
+
+"TRANSFER_BSB": "083231",
+
+"TRANSFER_ACCOUNT": "348802792",
+
+"CARD_CRN": "721562358",
+
+"PAYID":"
+
+"DEVICE_ID": "00AD8FAF-40C7-4E56-8F3C-75DD5EB3F1A8
+"FI_NAME": "NATIONAL AUSTRALIA BANK",
+
+"ORIGINAL NARRATIVE": "ANZ MOBILE BANKING PAYMENT 380940 Nyna, Macquarrie", TO
+
+"TRACE ID": "2612J3809400",
+
+"TRANSACTION TYPE": "NPP Debit",
+
+"PROCESSING_TYPE": "NPP",
+
+"MCC":"",
+
+"POS ENTRY": "NPP",
+
+"BRANCH_ID": "",
+
+"BRANCH_NAME": "",
+
+"COUNTRY ALPHA": "AU",
+
+"INTERNATIONAL": "N",
+
+"IP_ADDRESS": "203.222.148.141",
+
+"GEO_STATE": "VICTORIA
+
+"GEO CITY": "MELBOURNE
+
+"GEO_REGION":"",
+
+"GEO_COUNTRY": "036"
+
+}
+
+
+
+#############################
+
 const ExcelJS = require('exceljs');
 const moment = require('moment');
 
