@@ -1,4 +1,120 @@
+const ExcelJS = require('exceljs');
+const moment = require('moment');
 
+const handleDataandExport = async (data, values, columnDefs) => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  let mm = today.getMonth() + 1; // Months start at 0
+  let dd = today.getDate();
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  const formattedToday = `${dd}/${mm}/${yyyy}`;
+
+  if (data && data.length) {
+    if (values.searchOption === "accountNumber") {
+      const workbook = new ExcelJS.Workbook();
+      const sheetName = values.searchValue;
+      const worksheet = workbook.addWorksheet(sheetName, {
+        views: [{ state: "frozen", ySplit: 1 }],
+      });
+
+      const headerRow = columnDefs.map((column) => column.headerName);
+      const headerCellStyle = {
+        fill: {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "4F81BD" }, // Blue color
+        },
+        font: {
+          bold: true,
+          color: { argb: "FFFFFFFF" }, // White color
+        },
+      };
+
+      const headerRowCell = worksheet.addRow(headerRow);
+      headerRowCell.eachCell((cell) => {
+        cell.style = headerCellStyle;
+      });
+
+      // Convert numbers in string format to actual numbers
+      worksheet.columns.forEach((column, columnIndex) => {
+        const columnDef = columnDefs[columnIndex];
+        if (columnDef.type === 'numeric') {
+          column.eachCell((cell, rowNumber) => {
+            if (rowNumber > 1) {
+              const numericValue = parseFloat(cell.value);
+              if (!isNaN(numericValue)) {
+                cell.value = numericValue;
+              }
+            }
+          });
+        }
+      });
+
+      // Apply the dollar sign format only to the 'AMOUNT' and 'CASH' columns
+      const amountColumnIndex = columnDefs.findIndex((column) => column.field === "AMOUNT");
+      const cashColumnIndex = columnDefs.findIndex((column) => column.field === "CASH");
+
+      worksheet.columns.forEach((column, index) => {
+        const isAmountOrCash = index === amountColumnIndex || index === cashColumnIndex;
+        column.eachCell((cell, rowNumber) => {
+          if (rowNumber > 1) {
+            cell.numFmt = isAmountOrCash ? '"$"#,##0.00' : null;
+          }
+        });
+      });
+
+      // Convert the 'DATE' string from the API to a date object using Moment.js
+      const dateColumnIndex = columnDefs.findIndex((column) => column.field === "DATE");
+      if (dateColumnIndex >= 0) {
+        const dateColumn = worksheet.getColumn(dateColumnIndex + 1);
+        dateColumn.eachCell((cell, rowNumber) => {
+          if (rowNumber > 1) {
+            const dateValue = moment(cell.value, "DD/MM/YYYY").toDate();
+            if (moment(dateValue).isValid()) {
+              cell.value = dateValue;
+              cell.numFmt = "DD/MM/YYYY";
+            } else {
+              console.error(`Invalid date string: ${cell.value}`);
+            }
+          }
+        });
+      }
+
+      // Handle the 'TRANSFER_BSB' string correctly
+      const transferBsbColumnIndex = columnDefs.findIndex((column) => column.field === "TRANSFER_BSB");
+      if (transferBsbColumnIndex >= 0) {
+        const transferBsbColumn = worksheet.getColumn(transferBsbColumnIndex + 1);
+        transferBsbColumn.eachCell((cell, rowNumber) => {
+          if (rowNumber > 1) {
+            cell.value = cell.value.trim();
+          }
+        });
+      }
+
+      // ... Rest of the code for populating data ...
+
+      // Set column widths based on the maximum length of data in each column
+      worksheet.columns.forEach((column) => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          let columnLength = cell.value ? cell.value.toString().length : 10;
+          if (columnLength > maxLength) {
+            maxLength = columnLength;
+          }
+        });
+        column.width = maxLength < 10 ? 10 : maxLength;
+      });
+
+      // ... Rest of the code for exporting the workbook ...
+    }
+  }
+};
+
+
+============================
 
 const ExcelJS = require('exceljs');
 const moment = require('moment');
