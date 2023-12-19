@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            position: relative;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .graph-container {
+            display: flex;
+            margin-bottom: 20px;
+            height: 200px; /* Set the height of the graph container */
+        }
+        .graph {
+            width: 30px;
+            background-color: #ccc;
+            margin-right: 10px;
+            position: relative;
+        }
+        .fill {
+            width: 100%;
+            background: linear-gradient(to bottom, #3498db 50%, #ccc 50%); /* Half blue and half light blue */
+        }
+        .graph-caption {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 20px;
+            width: 30px;
+        }
+        .fill-level {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: red; /* Set button background color to red */
+        }
+        .caption {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .top-left-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .bottom-left-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .bottom-right-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-left-buttons">
+        <div>
+            <button class="button" id="startButton">Run</button>
+            <div class="caption">Start Breathing</div>
+        </div>
+        <div>
+            <button class="button" id="stopButton">Stop</button>
+            <div class="caption">Stop Breathing</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="graph-container">
+            <div class="graph">
+                <div class="fill" style="height: 100%;"></div>
+                <div class="graph-caption">Inhale</div>
+                <div class="fill-level">100%</div>
+            </div>
+            <div class="graph">
+                <div class="fill" style="height: 80%;"></div>
+                <div class="graph-caption">Exhale</div>
+                <div class="fill-level">80%</div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-left-buttons">
+        <div>
+            <button class="button" id="rButton">R</button>
+            <div class="caption">Inhale</div>
+        </div>
+        <div>
+            <button class="button" id="eButton">E</button>
+            <div class="caption">Exhale</div>
+        </div>
+    </div>
+    <div class="bottom-right-buttons">
+        <div>
+            <button class="button">Button1</button>
+            <div class="caption">Button1 Caption</div>
+        </div>
+        <div>
+            <button class="button">Button2</button>
+            <div class="caption">Button2 Caption</div>
+        </div>
+    </div>
+
+    <script>
+        const fillBars = document.querySelectorAll('.fill');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+
+        let isRunning = false;
+        let fillWidth = 0;
+
+        startButton.addEventListener('click', () => {
+            if (!isRunning) {
+                isRunning = true;
+                fillWidth = 0;
+                fillBars.forEach((fillBar, index) => {
+                    fillBar.style.transition = 'height 10s';
+                    if (index === 0) {
+                        fillBar.style.height = '100%'; // Inhale
+                    } else {
+                        fillBar.style.height = '80%'; // Exhale
+                    }
+                    fillBar.nextElementSibling.textContent = index === 0 ? '100%' : '80%';
+                });
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            if (isRunning) {
+                isRunning = false;
+                fillBars.forEach(fillBar => {
+                    fillBar.style.transition = 'none';
+                    fillBar.style.height = `${fillWidth}%`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
