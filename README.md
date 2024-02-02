@@ -1,5 +1,9 @@
-//http://ubpro.in/6Thrdu-pq 
 
+const match = hash.match(/#?(.*?)\?activeTab=(.*)/);
+
+
+
+//-------------------
 
 // Import necessary libraries and components
 import React, { useState, useEffect } from 'react';
