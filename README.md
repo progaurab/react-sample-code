@@ -1,3 +1,4 @@
+```javascript
 
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
@@ -49,7 +50,7 @@ function App() {
 export default App;
 
 
-
+```
 //-------------------
 
 // Import necessary libraries and components
