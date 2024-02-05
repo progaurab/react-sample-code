@@ -1,56 +1,57 @@
 ```javascript
 
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Tab, Tabs } from 'react-bootstrap';
 import TTT from './components/TTT';
 import ULTRON from './components/ULTRON';
 import TTTCACHE from './components/TTTCACHE';
 
-// Custom hook to get the active tab from the URL
-function useActiveTab() {
+const TabContent = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
 
+  // Determine the initial tab based on the URL
   useEffect(() => {
-    const hashParams = new URLSearchParams(location.hash.substring(location.hash.indexOf('?')));
-    const activeTabParam = hashParams.get('activeTab');
-    setActiveTab(activeTabParam || 'TTT');
+    const currentPath = location.pathname.replace('/', '');
+    setActiveTab(currentPath || 'TTT');
   }, [location]);
 
-  return activeTab;
-}
-
-function Content() {
-  const activeTab = useActiveTab();
+  // Update URL and active tab state
+  const handleSelect = (key) => {
+    setActiveTab(key);
+    navigate(`/${key}`);
+  };
 
   return (
     <>
-      <Tabs activeKey={activeTab} id="controlled-tab-example" className="mb-3">
-        <Tab eventKey="TTT" title={<NavLink to="/#TTT?activeTab=TTT">TTT</NavLink>}/>
-        <Tab eventKey="ULTRON" title={<NavLink to="/#ULTRON?activeTab=ULTRON">ULTRON</NavLink>}/>
-        <Tab eventKey="TTTCACHE" title={<NavLink to="/#TTTCACHE?activeTab=TTTCACHE">TTTCACHE</NavLink>}/>
+      <Tabs activeKey={activeTab} onSelect={handleSelect} className="mb-3">
+        <Tab eventKey="TTT" title={<NavLink to="/TTT">TTT</NavLink>}/>
+        <Tab eventKey="ULTRON" title={<NavLink to="/ULTRON">ULTRON</NavLink>}/>
+        <Tab eventKey="TTTCACHE" title={<NavLink to="/TTTCACHE">TTTCACHE</NavLink>}/>
       </Tabs>
 
       <Routes>
-        <Route path="/" element={<TTT />} />
         <Route path="/TTT" element={<TTT />} />
         <Route path="/ULTRON" element={<ULTRON />} />
         <Route path="/TTTCACHE" element={<TTTCACHE />} />
+        <Route path="/" element={<TTT />} />
       </Routes>
     </>
   );
-}
+};
 
-function AppWrapper() {
+function App() {
   return (
     <Router>
-      <Content />
+      <TabContent />
     </Router>
   );
 }
 
-export default AppWrapper;
+export default App;
+
 
 
 
