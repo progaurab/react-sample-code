@@ -1,6 +1,5 @@
 ```javascript
 
-
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import { Tab, Tabs } from 'react-bootstrap';
@@ -8,15 +7,29 @@ import TTT from './components/TTT';
 import ULTRON from './components/ULTRON';
 import TTTCACHE from './components/TTTCACHE';
 
+// A custom hook to get the current active tab from the URL hash
 function useActiveTab() {
-  const [activeTab, setActiveTab] = useState('');
-  useEffect(() => {
+  const getActiveTab = () => {
     const hash = window.location.hash;
-    const match = hash.match(/#(TTT|ULTRON|TTTCACHE)\?activeTab=(TTT|ULTRON|TTTCACHE)/i);
-    if (match && match[2]) {
-      setActiveTab(match[2]);
-    }
-  }, [window.location.hash]); // Listen to hash changes
+    const match = hash.match(/#(\w+)\?activeTab=(\w+)/);
+    return match ? match[2] : 'TTT'; // Default to 'TTT' if no match
+  };
+
+  const [activeTab, setActiveTab] = useState(getActiveTab());
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setActiveTab(getActiveTab());
+    };
+
+    // Listen for hash changes to update the active tab
+    window.addEventListener('hashchange', handleHashChange, false);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange, false);
+    };
+  }, []);
 
   return activeTab;
 }
@@ -26,17 +39,17 @@ function Content() {
 
   return (
     <>
-      <Tabs defaultActiveKey={activeTab} id="controlled-tab-example" className="mb-3">
-        <Tab eventKey="TTT" title={<NavLink to="/#TTT?activeTab=TTT">TTT</NavLink>}/>
-        <Tab eventKey="ULTRON" title={<NavLink to="/#ULTRON?activeTab=ULTRON">ULTRON</NavLink>}/>
-        <Tab eventKey="TTTCACHE" title={<NavLink to="/#TTTCACHE?activeTab=TTTCACHE">TTTCACHE</NavLink>}/>
+      <Tabs activeKey={activeTab} id="controlled-tab-example" className="mb-3">
+        <Tab eventKey="TTT" title={<NavLink to="#TTT?activeTab=TTT">TTT</NavLink>}/>
+        <Tab eventKey="ULTRON" title={<NavLink to="#ULTRON?activeTab=ULTRON">ULTRON</NavLink>}/>
+        <Tab eventKey="TTTCACHE" title={<NavLink to="#TTTCACHE?activeTab=TTTCACHE">TTTCACHE</NavLink>}/>
       </Tabs>
 
       <Routes>
         <Route path="/TTT" element={<TTT />} />
         <Route path="/ULTRON" element={<ULTRON />} />
         <Route path="/TTTCACHE" element={<TTTCACHE />} />
-        {/* Fallback Route */}
+        {/* Redirect to default tab if no specific tab is selected */}
         <Route path="*" element={<TTT />} />
       </Routes>
     </>
@@ -52,6 +65,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
