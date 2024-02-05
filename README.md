@@ -1,5 +1,52 @@
 
-const match = hash.match(/#?(.*?)\?activeTab=(.*)/);
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { Tab, Tabs } from 'react-bootstrap';
+import TTT from './components/TTT';
+import ULTRON from './components/ULTRON';
+import TTTCACHE from './components/TTTCACHE';
+
+function useActiveTab() {
+  const [activeTab, setActiveTab] = useState('');
+  useEffect(() => {
+    const hash = window.location.hash;
+    const match = hash.match(/#(\w+)?\?activeTab=(\w+)/i);
+    if (match && match[2]) {
+      setActiveTab(match[2].toLowerCase());
+    }
+  }, [window.location.href]);
+
+  return activeTab;
+}
+
+function App() {
+  const activeTab = useActiveTab();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!activeTab) {
+      navigate("/#TTT?activeTab=TTT", {replace: true});
+    }
+  }, [activeTab, navigate]);
+
+  return (
+    <>
+      <Tabs defaultActiveKey={activeTab} id="controlled-tab-example" className="mb-3">
+        <Tab eventKey="ttt" title={<NavLink to="/#TTT?activeTab=TTT">TTT</NavLink>}/>
+        <Tab eventKey="ultron" title={<NavLink to="/#ULTRON?activeTab=ULTRON">ULTRON</NavLink>}/>
+        <Tab eventKey="tttcache" title={<NavLink to="/#TTTCACHE?activeTab=TTTCACHE">TTTCACHE</NavLink>}/>
+      </Tabs>
+
+      <Routes>
+        <Route path="/ttt" element={<TTT />} />
+        <Route path="/ultron" element={<ULTRON />} />
+        <Route path="/tttcache" element={<TTTCACHE />} />
+      </Routes>
+    </>
+  );
+}
+
+export default App;
 
 
 
