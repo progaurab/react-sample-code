@@ -1,3 +1,144 @@
+```javascript
+//To achieve the functionality you've described, where selecting an option from one dropdown triggers an API call that populates the next dropdown, and so forth, you'll need to manage state and side effects appropriately. For demonstration purposes, since we can't make actual API calls, I'll outline a mock implementation that simulates this behavior. 
+
+//You'll also see how to handle a submit button that sends a POST request with the selected values. Note that to actually perform API calls, you would typically use a library like Axios or the Fetch API, but these calls will be simulated in this example.
+
+//### Step 1: Setting Up the Form with Formik and React Bootstrap
+
+First, ensure you have `formik`, `yup`, and `react-bootstrap` installed in your project.
+
+```bash
+npm install formik yup react-bootstrap
+```
+
+### Step 2: Implementing the Component
+
+```jsx
+import React, { useState } from 'react';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { Container, Row, Col, Button, FloatingLabel } from 'react-bootstrap';
+
+// Mock API call function
+const mockApiCall = (selectedOption, dropdownNumber) => {
+  console.log(`API Call for Dropdown ${dropdownNumber}: ${selectedOption}`);
+
+  // Simulate different API responses based on the dropdown number
+  switch (dropdownNumber) {
+    case 1:
+      return Promise.resolve([
+        { DATE_RANGE: "2023-01-01 - 2023-01-31" },
+        { DATE_RANGE: "2023-02-01 - 2023-02-28" },
+        { DATE_RANGE: "2023-03-01 - 2023-03-31" }
+      ]);
+    case 2:
+      return Promise.resolve([
+        { CUSTOMER_ID: "9776654" },
+        { CUSTOMER_ID: "9776655" },
+        { CUSTOMER_ID: "9776656" }
+      ]);
+    default:
+      return Promise.resolve([]);
+  }
+};
+
+const MyForm = () => {
+  const [dateRanges, setDateRanges] = useState([]);
+  const [customerIds, setCustomerIds] = useState([]);
+
+  return (
+    <Formik
+      initialValues={{
+        dropdownOne: '',
+        dropdownTwo: '',
+        dropdownThree: ''
+      }}
+      validationSchema={Yup.object({
+        dropdownOne: Yup.string().required('Required'),
+        dropdownTwo: Yup.string().required('Required'),
+        dropdownThree: Yup.string().required('Required')
+      })}
+      onSubmit={(values) => {
+        console.log('Submit:', values);
+        // Here you would typically make an API call
+      }}
+    >
+      {({ setFieldValue }) => (
+        <Form>
+          <Container>
+            <Row className="mb-3">
+              {/* Dropdown 1 */}
+              <Col>
+                <FloatingLabel label="Child">
+                  <Field
+                    as="select"
+                    name="dropdownOne"
+                    className="form-select"
+                    onChange={e => {
+                      const { value } = e.target;
+                      setFieldValue("dropdownOne", value);
+                      mockApiCall(value, 1).then(setDateRanges); // Simulate API call
+                    }}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="child 1">child 1</option>
+                    <option value="child 2">child 2</option>
+                    <option value="child 3">child 3</option>
+                  </Field>
+                </FloatingLabel>
+              </Col>
+
+              {/* Dropdown 2 */}
+              <Col>
+                <FloatingLabel label="Date Range">
+                  <Field
+                    as="select"
+                    name="dropdownTwo"
+                    className="form-select"
+                    onChange={e => {
+                      const { value } = e.target;
+                      setFieldValue("dropdownTwo", value);
+                      mockApiCall(value, 2).then(setCustomerIds); // Simulate API call
+                    }}
+                  >
+                    <option value="">Select a date range</option>
+                    {dateRanges.map((range, index) => (
+                      <option key={index} value={range.DATE_RANGE}>
+                        {range.DATE_RANGE}
+                      </option>
+                    ))}
+                  </Field>
+                </FloatingLabel>
+              </Col>
+
+              {/* Dropdown 3 */}
+              <Col>
+                <FloatingLabel label="Customer ID">
+                  <Field
+                    as="select"
+                    name="dropdownThree"
+                    className="form-select"
+                  >
+                    <option value="">Select a customer ID</option>
+                    {customerIds.map((customer, index) => (
+                      <option key={index} value={customer.CUSTOMER_ID}>
+                        {customer.CUSTOMER_ID}
+                      </option>
+                    ))}
+                  </Field>
+                </FloatingLabel>
+              </Col>
+            </Row>
+
+            <Button type="submit">Submit</Button>
+          </Container>
+        </Form>
+      )}
+   
+
+
+```
+
 
 ```javascript
 import React from 'react';
