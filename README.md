@@ -1,22 +1,70 @@
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <system.webServer>
-    <rewrite>
-      <rules>
-        <rule name="React Routes" stopProcessing="true">
-          <match url=".*" />
-          <conditions logicalGrouping="MatchAll">
-            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
-            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
-          </conditions>
-          <action type="Rewrite" url="/index.html" />
-        </rule>
-      </rules>
-    </rewrite>
-  </system.webServer>
-</configuration>
+```javascript
+import React from 'react';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { Container, Row, Col, Form as BootstrapForm, FloatingLabel } from 'react-bootstrap';
+
+// Your API result array
+const dropdownOptions = [
+  { DA_NAME: "child 1" },
+  { DA_NAME: "child 2" },
+  { DA_NAME: "child 3" }
+];
+
+// Initial values for Formik
+const initialValues = {
+  dropdownOne: '', // Initial value for the first dropdown
+};
+
+// Validation schema using Yup
+const validationSchema = Yup.object({
+  dropdownOne: Yup.string().required('Required'), // Basic validation for the first dropdown
+});
+
+const MyForm = () => {
+  return (
+    <Container>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      >
+        {({ errors, touched }) => (
+          <Form>
+            <Row>
+              <Col md={4}>
+                <FloatingLabel label="Dropdown One">
+                  <Field
+                    as="select"
+                    name="dropdownOne"
+                    className={`form-select ${errors.dropdownOne && touched.dropdownOne ? 'is-invalid' : ''}`}
+                  >
+                    <option value="">Select an option</option>
+                    {dropdownOptions.map((option, index) => (
+                      <option key={index} value={option.DA_NAME}>
+                        {option.DA_NAME}
+                      </option>
+                    ))}
+                  </Field>
+                  {errors.dropdownOne && touched.dropdownOne ? (
+                    <div className="invalid-feedback">{errors.dropdownOne}</div>
+                  ) : null}
+                </FloatingLabel>
+              </Col>
+              {/* Placeholder for additional dropdowns */}
+            </Row>
+          </Form>
+        )}
+      </Formik>
+    </Container>
+  );
+};
+
+export default MyForm;
+
 ```
 
 
