@@ -1,5 +1,22 @@
 ```javascript
+//----------------------------
+const [isDataFetched, setIsDataFetched] = useState(false);
+const [triggerFetch, setTriggerFetch] = useState(false); // This could be your fetchDataCondition
 
+useEffect(() => {
+  if (triggerFetch && !isDataFetched) {
+    fetchDataForDropdownOne()
+      .then(data => {
+        setDropdownOptions(data);
+        setIsDataFetched(true); // Set to true to prevent refetching
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
+  }
+}, [triggerFetch, isDataFetched]); // Depend on the condition and whether data has been fetched
+
+//---------------------------
 
 To fetch data for the first dropdown upon selecting a specific tab (for instance, when the "TADA" tab becomes active), you can use the `useEffect` hook to trigger the fetch call when the tab is selected. This involves checking the current active tab state and making the fetch call when it matches the desired tab.
 
