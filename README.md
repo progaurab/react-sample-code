@@ -1,4 +1,112 @@
 ```javascript
+
+
+To fetch data for the first dropdown upon selecting a specific tab (for instance, when the "TADA" tab becomes active), you can use the `useEffect` hook to trigger the fetch call when the tab is selected. This involves checking the current active tab state and making the fetch call when it matches the desired tab.
+
+Let's assume you're managing the active tab state in your component, and when the "TADA" tab is selected, you want to fetch data for the first dropdown. Here's how you could structure your component to achieve this:
+
+### Step 1: Define the Active Tab State and Fetch Function
+
+First, ensure you have a state for the active tab and a function to fetch data for the dropdown:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { Container, Row, Col, Button, FloatingLabel } from 'react-bootstrap';
+
+// Mock function to simulate fetching data for Dropdown 1
+const fetchDataForDropdownOne = async () => {
+  // Simulate a POST fetch call
+  const response = await fetch('your-api-endpoint', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // Adjust the body as per your API requirements
+    body: JSON.stringify({ key: 'value' }),
+  });
+  
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  
+  const data = await response.json();
+  return data.map(item => ({ DA_NAME: item.DA_NAME }));
+};
+```
+
+### Step 2: Trigger Fetch on Tab Selection
+
+Assuming you have a mechanism to set the active tab (e.g., via state or URL), you can use `useEffect` to trigger the fetch when the "TADA" tab is selected:
+
+```javascript
+const MyForm = () => {
+  const [activeTab, setActiveTab] = useState(''); // State to track the active tab
+  const [dropdownOptions, setDropdownOptions] = useState([]); // State for the first dropdown options
+
+  useEffect(() => {
+    // Check if the "TADA" tab is selected
+    if (activeTab === 'TADA') {
+      fetchDataForDropdownOne()
+        .then(data => {
+          setDropdownOptions(data); // Update state with fetched data
+        })
+        .catch(error => {
+          console.error('Failed to fetch data:', error);
+        });
+    }
+  }, [activeTab]); // Depend on the activeTab state
+
+  // Rest of your component...
+};
+```
+
+### Step 3: Render the Form with Dynamic Dropdown Data
+
+In the form rendering part, use the `dropdownOptions` state to populate the first dropdown:
+
+```javascript
+  return (
+    <Formik
+      initialValues={{
+        dropdownOne: '',
+        // Other initial values...
+      }}
+      // Your validation schema and submit handler...
+    >
+      {({ errors, touched }) => (
+        <Form>
+          <Container>
+            <Row className="mb-3">
+              <Col>
+                <FloatingLabel label="First Dropdown">
+                  <Field as="select" name="dropdownOne" className="form-select">
+                    <option value="">Select an option</option>
+                    {dropdownOptions.map((option, index) => (
+                      <option key={index} value={option.DA_NAME}>
+                        {option.DA_NAME}
+                      </option>
+                    ))}
+                  </Field>
+                </FloatingLabel>
+              </Col>
+              {/* Additional dropdowns... */}
+            </Row>
+            {/* Submit button... */}
+          </Container>
+        </Form>
+      )}
+    </Formik>
+  );
+```
+
+### Conclusion
+
+This approach demonstrates how to fetch data for a dropdown when a specific tab is selected, leveraging React's state and effects. Ensure your server endpoint is correctly set up to handle the POST request and return the expected data format for populating the dropdown. Adjust the `fetchDataForDropdownOne` function to match your API's requirements, including the correct endpoint and any necessary request headers or body content.
+
+
+//##₹######################₹
 //To achieve the functionality you've described, where selecting an option from one dropdown triggers an API call that populates the next dropdown, and so forth, you'll need to manage state and side effects appropriately. For demonstration purposes, since we can't make actual API calls, I'll outline a mock implementation that simulates this behavior. 
 
 //You'll also see how to handle a submit button that sends a POST request with the selected values. Note that to actually perform API calls, you would typically use a library like Axios or the Fetch API, but these calls will be simulated in this example.
