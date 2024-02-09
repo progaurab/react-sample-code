@@ -1,6 +1,50 @@
 ```javascript
 //--------
+const input = [
+  {
+    "daname": "a",
+    "date": "1a"
+  },
+  {
+    "dname":"a",
+    "date":"2a"
+  },
+  {
+    "dname":"b",
+    "date":"1b"
+  },
+  {
+    "dname":"b",
+    "date":"2b"
+  }
+];
 
+const transform = (input) => {
+  const result = [];
+
+  // Create an aggregation object
+  const aggregation = input.reduce((acc, {dname, date, daname}) => {
+    // Use 'daname' if defined, otherwise use 'dname'
+    const name = daname || dname;
+    if (!acc[name]) {
+      acc[name] = [];
+    }
+    acc[name].push(date);
+    return acc;
+  }, {});
+
+  // Convert the aggregation object to the desired array structure
+  for (const [daname, date] of Object.entries(aggregation)) {
+    result.push({ daname, date });
+  }
+
+  return result;
+};
+
+const output = transform(input);
+console.log(output);
+
+//---------
 
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
