@@ -1,5 +1,87 @@
 ```javascript
 //--------
+To make a POST fetch call on form submission and use the `DaTable` JSON data as the result, you need to modify the form's `handleSubmit` function. This example will demonstrate how to make the call, including both dropdown selections in the request body. The response will be simulated by directly using the `DaTable` JSON data since we're not interacting with a real backend here.
+
+First, let's define or re-use the `tableData` JSON structure from the previous example, which will act as the mock response data for the fetch call:
+
+
+const tableData = [
+  { id: 1, col1: 'Data 1-1', col2: 'Data 1-2', col3: 'Data 1-3', col4: 'Data 1-4', col5: 'Data 1-5', col6: 'Data 1-6' },
+  // Add other rows as per the previous example
+];
+
+
+Next, modify the `DropdownComponent` to include the fetch call within the `handleSubmit` function and update the state accordingly. For this example, the `DaTable` component's visibility and the data it displays will be controlled by the state that gets updated upon the successful submission of the form:
+
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, FloatingLabel, Accordion } from 'react-bootstrap';
+// Import or define DaTable and Hello components here
+
+const DropdownComponent = () => {
+  const [selectedDA, setSelectedDA] = useState('');
+  const [selectedDateRange, setSelectedDateRange] = useState('');
+  const [showTable, setShowTable] = useState(false); // State to control DaTable visibility
+  const [daTableData, setDaTableData] = useState([]); // State to hold the table data
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Simulate a POST fetch call
+    const postData = {
+      selectedDA,
+      selectedDateRange
+    };
+
+    console.log('Submitting:', postData);
+
+    // Here, replace the URL with your actual endpoint
+    fetch('https://your-api-endpoint.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Simulate setting the response data (tableData) as the result of the API call
+      setDaTableData(tableData);
+      setShowTable(true);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          {/* Your dropdowns setup */}
+        </Row>
+        <Button type="submit">Submit</Button>
+      </Form>
+
+      {showTable && (
+        <DaTable data={daTableData} />
+      )}
+    </Container>
+  );
+};
+
+export default DropdownComponent;
+
+
+In the `DaTable` component, ensure you modify it to accept `data` as a prop and render the table based on this prop:
+
+const DaTable = ({ data }) => {
+  // Your DaTable implementation, utilizing the data prop for table rows
+};
+
+
+**Note:** The `fetch` call in the `handleSubmit` function is simulated to directly set `tableData` as the response data upon submission. In a real application, you'd receive this data from your backend in response to the fetch call. Ensure the endpoint URL and request body structure match what your backend expects.
+
+//-------
+
 To implement the requirements, we'll follow these steps:
 
 1. Define a JSON object with random data for the table.
@@ -9,7 +91,6 @@ To implement the requirements, we'll follow these steps:
 
 ### Step 1: Define the JSON Data for the Table
 
-```javascript
 const tableData = [
   { id: 1, col1: 'Data 1-1', col2: 'Data 1-2', col3: 'Data 1-3', col4: 'Data 1-4', col5: 'Data 1-5', col6: 'Data 1-6' },
   { id: 2, col1: 'Data 2-1', col2: 'Data 2-2', col3: 'Data 2-3', col4: 'Data 2-4', col5: 'Data 2-5', col6: 'Data 2-6' },
@@ -17,11 +98,10 @@ const tableData = [
   { id: 4, col1: 'Data 4-1', col2: 'Data 4-2', col3: 'Data 4-3', col4: 'Data 4-4', col5: 'Data 4-5', col6: 'Data 4-6' },
   { id: 5, col1: 'Data 5-1', col2: 'Data 5-2', col3: 'Data 5-3', col4: 'Data 5-4', col5: 'Data 5-5', col6: 'Data 5-6' },
 ];
-```
+
 
 ### Step 2: Create the `DaTable` Component
 
-```jsx
 import React, { useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
 
@@ -61,13 +141,12 @@ const DaTable = () => {
     </Table>
   );
 };
-```
+
 
 ### Step 3 & 4: Add Button to Log Filtered JSON and Integrate `DaTable` Component
 
 Add the `DaTable` component to your form and include a new button beside the submit button to log the filtered JSON data:
 
-```jsx
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, FloatingLabel, Accordion } from 'react-bootstrap';
 
@@ -109,7 +188,7 @@ Accordion.Body>
 };
 
 export default DropdownComponent;
-```
+
 
 In this setup:
 - The `DaTable` component is included in the body of the Accordion, showing the table as specified.
@@ -117,7 +196,9 @@ In this setup:
 - Ensure `selectedRows` state management is accessible in the context where `logFilteredData` is defined. This might require passing `selectedRows` and `setSelectedRows` as props to `DaTable` or managing the state at a higher level in your component tree.
 
 This example outlines a basic implementation. Depending on your application's architecture, you may need to adjust state management and data flow between components.
+```
 
+```javascript
 //--------
 
 import React, { useState } from 'react';
