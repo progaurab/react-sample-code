@@ -1,5 +1,55 @@
 ```javascript
 //--------
+
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, FloatingLabel, Accordion } from 'react-bootstrap';
+
+// Assuming Hello component is defined in the same file or imported
+// const Hello = () => { return <div>Hello!</div>; };
+
+const DropdownComponent = () => {
+  const [selectedDA, setSelectedDA] = useState('');
+  const [selectedDateRange, setSelectedDateRange] = useState('');
+  const [showAccordion, setShowAccordion] = useState(false); // State to control accordion visibility
+
+  const handleDAChange = (e) => {
+    setSelectedDA(e.target.value);
+    setSelectedDateRange('');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowAccordion(true); // Show accordion on submit
+    console.log(JSON.stringify({ selectedDA, selectedDateRange }));
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          {/* Dropdowns setup as previously described */}
+        </Row>
+        <Button type="submit">Submit</Button>
+      </Form>
+
+      {showAccordion && (
+        <Accordion defaultActiveKey="0" className="mt-3">
+          <Accordion.Item eventKey="0">
+            <Accordion.Header>{selectedDateRange || 'Select a date range'}</Accordion.Header>
+            <Accordion.Body>
+              <Hello />
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      )}
+    </Container>
+  );
+};
+
+export default DropdownComponent;
+
+//--------
+
 <Container>
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3">
