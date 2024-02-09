@@ -1,47 +1,50 @@
 ```javascript
 //--------
+
 const input = [
   {
     "daname": "a",
     "date": "1a"
   },
   {
-    "dname":"a",
-    "date":"2a"
+    "daname": "a",
+    "date": "2a"
   },
   {
-    "dname":"b",
-    "date":"1b"
+    "daname": "b",
+    "date": "1b"
   },
   {
-    "dname":"b",
-    "date":"2b"
+    "daname": "b",
+    "date": "2b"
   }
 ];
 
-const transform = (input) => {
-  const result = [];
+function transformData(data) {
+  // Create a map to hold the aggregation
+  const map = new Map();
 
-  // Create an aggregation object
-  const aggregation = input.reduce((acc, {dname, date, daname}) => {
-    // Use 'daname' if defined, otherwise use 'dname'
-    const name = daname || dname;
-    if (!acc[name]) {
-      acc[name] = [];
+  // Iterate over each item in the input array
+  data.forEach(item => {
+    // If the daname is already in the map, push the new date into the existing array
+    if (map.has(item.daname)) {
+      map.get(item.daname).push(item.date);
+    } else {
+      // Otherwise, create a new array with the current date
+      map.set(item.daname, [item.date]);
     }
-    acc[name].push(date);
-    return acc;
-  }, {});
+  });
 
-  // Convert the aggregation object to the desired array structure
-  for (const [daname, date] of Object.entries(aggregation)) {
-    result.push({ daname, date });
-  }
+  // Transform the map back into the desired array structure
+  const result = Array.from(map, ([daname, date]) => ({
+    daname,
+    date
+  }));
 
   return result;
-};
+}
 
-const output = transform(input);
+const output = transformData(input);
 console.log(output);
 
 //---------
