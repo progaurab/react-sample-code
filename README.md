@@ -1,6 +1,33 @@
 ```javascript
 //--------
-
+<Container>
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          <Col>
+            <FloatingLabel controlId="dropdownDAName" label="DA Name" className="w-100 mb-3">
+              <Form.Select aria-label="DA Name" value={selectedDA} onChange={handleDAChange} className="w-100">
+                <option value="">Select DA Name</option>
+                {data.map((item, index) => (
+                  <option key={index} value={item.DA_NAME}>{item.DA_NAME}</option>
+                ))}
+              </Form.Select>
+            </FloatingLabel>
+          </Col>
+          <Col>
+            <FloatingLabel controlId="dropdownDateRange" label="Date Range" className="w-100 mb-3">
+              <Form.Select aria-label="Date Range" value={selectedDateRange} onChange={(e) => setSelectedDateRange(e.target.value)} disabled={!selectedDA} className="w-100">
+                <option value="">Select Date Range</option>
+                {selectedDA && data.find(item => item.DA_NAME === selectedDA)?.DATE_RANGE.map((range, index) => (
+                  <option key={index} value={range}>{range}</option>
+                ))}
+              </Form.Select>
+            </FloatingLabel>
+          </Col>
+        </Row>
+        <Button type="submit">Submit</Button>
+      </Form>
+    </Container>
+//----
 const input = [
   {
     "daname": "a",
