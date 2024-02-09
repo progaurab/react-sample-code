@@ -1,4 +1,92 @@
 ```javascript
+//--------
+
+
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+
+const data = [
+  {
+    "DA_NAME": "Sexual Servitude",
+    "DATE_RANGE": [
+      "2023-07-01 - 2023-09-30",
+      "2023-10-01 - 2023-12-31",
+      "2023-01-01 - 2023-03-31",
+      "2023-04-01 - 2023-06-30"
+    ]
+  },
+  {
+    "DA_NAME": "Unregistered Remittance Activity",
+    "DATE_RANGE": [
+      "2023-07-01 - 2023-09-30",
+      "2023-10-01 - 2023-12-31",
+      "2023-01-01 - 2023-03-31",
+      "2023-04-01 - 2023-06-30"
+    ]
+  }
+];
+
+const DropdownComponent = () => {
+  const [selectedDA, setSelectedDA] = useState('');
+  const [selectedDateRange, setSelectedDateRange] = useState('');
+
+  const handleDAChange = (e) => {
+    setSelectedDA(e.target.value);
+    setSelectedDateRange('');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(JSON.stringify({ selectedDA, selectedDateRange }));
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          <Col>
+            <Form.Group controlId="dropdownDAName">
+              <Form.Label>DA Name</Form.Label>
+              <Form.Select aria-label="DA Name" value={selectedDA} onChange={handleDAChange}>
+                <option value="">Select DA Name</option>
+                {data.map((item, index) => (
+                  <option key={index} value={item.DA_NAME}>{item.DA_NAME}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="dropdownDateRange">
+              <Form.Label>Date Range</Form.Label>
+              <Form.Select aria-label="Date Range" value={selectedDateRange} onChange={(e) => setSelectedDateRange(e.target.value)} disabled={!selectedDA}>
+                <option value="">Select Date Range</option>
+                {selectedDA && data.find(item => item.DA_NAME === selectedDA)?.DATE_RANGE.map((range, index) => (
+                  <option key={index} value={range}>{range}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+        <Button type="submit">Submit</Button>
+      </Form>
+    </Container>
+  );
+};
+
+export default DropdownComponent;
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------
 import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form } from 'formik';
 import { Container, Row, Col, FloatingLabel } from 'react-bootstrap';
