@@ -1,14 +1,100 @@
 ```javascript
-//--------
-To make a POST fetch call on form submission and use the `DaTable` JSON data as the result, you need to modify the form's `handleSubmit` function. This example will demonstrate how to make the call, including both dropdown selections in the request body. The response will be simulated by directly using the `DaTable` JSON data since we're not interacting with a real backend here.
-
-First, let's define or re-use the `tableData` JSON structure from the previous example, which will act as the mock response data for the fetch call:
-
+// DropdownComponent.js
+import React, { useState } from 'react';
+import { Container, Row, Col, Form, Button, FloatingLabel } from 'react-bootstrap';
+import DaTable from './DaTable'; // Make sure to adjust the import path according to your file structure
 
 const tableData = [
   { id: 1, col1: 'Data 1-1', col2: 'Data 1-2', col3: 'Data 1-3', col4: 'Data 1-4', col5: 'Data 1-5', col6: 'Data 1-6' },
-  // Add other rows as per the previous example
+  { id: 2, col1: 'Data 2-1', col2: 'Data 2-2', col3: 'Data 2-3', col4: 'Data 2-4', col5: 'Data 2-5', col6: 'Data 2-6' },
+  { id: 3, col1: 'Data 3-1', col2: 'Data 3-2', col3: 'Data 3-3', col4: 'Data 3-4', col5: 'Data 3-5', col6: 'Data 3-6' },
+  { id: 4, col1: 'Data 4-1', col2: 'Data 4-2', col3: 'Data 4-3', col4: 'Data 4-4', col5: 'Data 4-5', col6: 'Data 4-6' },
+  { id: 5, col1: 'Data 5-1', col2: 'Data 5-2', col3: 'Data 5-3', col4: 'Data 5-4', col5: 'Data 5-5', col6: 'Data 5-6' },
 ];
+
+const DropdownComponent = () => {
+  const [selectedDA, setSelectedDA] = useState('');
+  const [selectedDateRange, setSelectedDateRange] = useState('');
+  const [showTable, setShowTable] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setShowTable(true);
+  };
+
+  const logFilteredData = () => {
+    const filteredData = tableData.filter(row => !selectedRows.includes(row.id));
+    console.log(filteredData);
+  };
+
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Row className="mb-3">
+          <Col>
+            <FloatingLabel controlId="dropdownDAName" label="DA Name" className="mb-3">
+              <Form.Select aria-label="DA Name" value={selectedDA} onChange={(e) => setSelectedDA(e.target.value)}>
+                <option value="">Select DA Name</option>
+                {/* Populate options dynamically */}
+              </Form.Select>
+            </FloatingLabel>
+          </Col>
+          <Col>
+            <FloatingLabel controlId="dropdownDateRange" label="Date Range" className="mb-3">
+              <Form.Select aria-label="Date Range" value={selectedDateRange} onChange={(e) => setSelectedDateRange(e.target.value)}>
+                <option value="">Select Date Range</option>
+                {/* Populate options based on selectedDA */}
+              </Form.Select>
+            </FloatingLabel>
+          </Col>
+        </Row>
+        <Button type="submit" className="me-2">Submit</Button>
+        <Button onClick={logFilteredData} variant="info">Log Filtered Data</Button>
+      </Form>
+
+      {showTable && <DaTable data={tableData} setSelectedRows={setSelectedRows} />}
+    </Container>
+  );
+};
+
+export default DropdownComponent;
+
+```
+
+######------------
+```javascript
+// DaTable.js
+import React from 'react';
+import { Table, Form } from 'react-bootstrap';
+
+const DaTable = ({ data, setSelectedRows }) => {
+  const handleCheckboxChange = (id) => {
+    setSelectedRows((prev) => prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]);
+  };
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>#</th><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th><th>Column 5</th><th>Column 6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id}>
+            <td><Form.Check type="checkbox" onChange={() => handleCheckboxChange(row.id)} /></td>
+            <td>{row.col1}</td><td>{row.col2}</td><td>{row.col3}</td><td>{row.col4}</td><td>{row.col5}</td><td>{row.col6}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default DaTable;
+
+```
 
 
 Next, modify the `DropdownComponent` to include the fetch call within the `handleSubmit` function and update the state accordingly. For this example, the `DaTable` component's visibility and the data it displays will be controlled by the state that gets updated upon the successful submission of the form:
