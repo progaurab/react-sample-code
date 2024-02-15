@@ -1,6 +1,87 @@
 ```javascript
 
+import React, { useState, useEffect } from 'react';
+import { Table, Form } from 'react-bootstrap';
 
+const DaTable = ({ data, setSelectedRows }) => {
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Initialize an array based on data length for tracking individual row selections
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
+
+  useEffect(() => {
+    // When selectAll changes, update the selectedRowIds accordingly
+    if (selectAll) {
+      setSelectedRowIds(data.map(item => item.id));
+    } else {
+      setSelectedRowIds([]);
+    }
+  }, [selectAll, data]);
+
+  useEffect(() => {
+    // Update the parent component's state whenever selectedRowIds changes
+    setSelectedRows(selectedRowIds);
+  }, [selectedRowIds, setSelectedRows]);
+
+  const handleSelectAllChange = () => {
+    setSelectAll(!selectAll);
+  };
+
+  const handleCheckboxChange = (id) => {
+    if (selectedRowIds.includes(id)) {
+      setSelectedRowIds(selectedRowIds.filter(rowId => rowId !== id));
+    } else {
+      setSelectedRowIds([...selectedRowIds, id]);
+    }
+  };
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>
+            <Form.Check
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAllChange}
+            />
+          </th>
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <th>Column 3</th>
+          <th>Column 4</th>
+          <th>Column 5</th>
+          <th>Column 6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id}>
+            <td>
+              <Form.Check
+                type="checkbox"
+                checked={selectedRowIds.includes(row.id)}
+                onChange={() => handleCheckboxChange(row.id)}
+              />
+            </td>
+            <td>{row.col1}</td>
+            <td>{row.col2}</td>
+            <td>{row.col3}</td>
+            <td>{row.col4}</td>
+            <td>{row.col5}</td>
+            <td>{row.col6}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default DaTable;
+
+
+
+//=========================
 function formatDateRange(startDate, endDate) {
   // Parse the start and end dates
   const start = new Date(startDate);
