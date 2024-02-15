@@ -6,6 +6,94 @@ import { Table, Form } from 'react-bootstrap';
 const DaTable = ({ data, setSelectedRows }) => {
   const [selectAll, setSelectAll] = useState(false);
 
+  // Function to handle the "Select All" checkbox change
+  const handleSelectAllChange = () => {
+    if (!selectAll) {
+      // If currently not selected, select all
+      setSelectedRows(data.map(item => item.id));
+    } else {
+      // If currently selected, deselect all
+      setSelectedRows([]);
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Function to handle individual row checkbox changes
+  const handleCheckboxChange = (id) => {
+    if (setSelectedRows.includes(id)) {
+      // If the row is already selected, remove it from the selection
+      setSelectedRows(setSelectedRows.filter(rowId => rowId !== id));
+    } else {
+      // If the row is not selected, add it to the selection
+      setSelectedRows([...setSelectedRows, id]);
+    }
+    // If deselecting any row, also ensure selectAll is unchecked
+    if (selectAll && setSelectedRows.length !== data.length) {
+      setSelectAll(false);
+    }
+  };
+
+  // Effect to synchronize selectAll state with individual row selections
+  useEffect(() => {
+    if (setSelectedRows.length === data.length) {
+      setSelectAll(true);
+    } else {
+      setSelectAll(false);
+    }
+  }, [setSelectedRows, data.length]);
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>
+            <Form.Check
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAllChange}
+            />
+          </th>
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <th>Column 3</th>
+          <th>Column 4</th>
+          <th>Column 5</th>
+          <th>Column 6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id}>
+            <td>
+              <Form.Check
+                type="checkbox"
+                checked={setSelectedRows.includes(row.id)}
+                onChange={() => handleCheckboxChange(row.id)}
+              />
+            </td>
+            <td>{row.col1}</td>
+            <td>{row.col2}</td>
+            <td>{row.col3}</td>
+            <td>{row.col4}</td>
+            <td>{row.col5}</td>
+            <td>{row.col6}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default DaTable;
+
+//??????????
+
+import React, { useState, useEffect } from 'react';
+import { Table, Form } from 'react-bootstrap';
+
+const DaTable = ({ data, setSelectedRows }) => {
+  const [selectAll, setSelectAll] = useState(false);
+
   // Initialize an array based on data length for tracking individual row selections
   const [selectedRowIds, setSelectedRowIds] = useState([]);
 
