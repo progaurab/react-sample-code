@@ -1,4 +1,47 @@
 ```javascript
+
+
+function formatDateRange(startDate, endDate) {
+  // Parse the start and end dates
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  // Adjust the end date to the last day of the month
+  end.setMonth(end.getMonth() + 1);
+  end.setDate(0);
+
+  // Create options for formatting the dates
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+  // Create Intl.DateTimeFormat instances for formatting
+  const startFormatter = new Intl.DateTimeFormat('en-US', options);
+  const endFormatter = new Intl.DateTimeFormat('en-US', options);
+
+  // Format the start and end dates
+  const formattedStart = startFormatter.format(start);
+  const formattedEnd = endFormatter.format(end);
+
+  // Return the formatted date range
+  return `${formattedStart} to ${formattedEnd}`;
+}
+
+// Example date range
+const startDate = '2023-01-01';
+const endDate = '2023-03-01';
+
+// Convert and print the formatted date range
+console.log(formatDateRange(startDate, endDate));
+// Output: "January 1, 2023 to March 31, 2023"
+
+
+
+
+
+
+
+
+
+
 // DropdownComponent.js
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, FloatingLabel } from 'react-bootstrap';
