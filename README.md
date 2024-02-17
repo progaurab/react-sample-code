@@ -1,6 +1,47 @@
 ```javascript
 
 
+const App = () => {
+  const tableData = [
+    { id: 1, col1: 'Data 1-1', col2: 'Data 1-2', col3: 'Data 1-3', col4: 'Data 1-4', col5: 'Data 1-5', col6: 'Data 1-6' },
+    { id: 2, col1: 'Data 2-1', col2: 'Data 2-2', col3: 'Data 2-3', col4: 'Data 2-4', col5: 'Data 2-5', col6: 'Data 2-6' },
+    { id: 3, col1: 'Data 3-1', col2: 'Data 3-2', col3: 'Data 3-3', col4: 'Data 3-4', col5: 'Data 3-5', col6: 'Data 3-6' },
+    { id: 4, col1: 'Data 4-1', col2: 'Data 4-2', col3: 'Data 4-3', col4: 'Data 4-4', col5: 'Data 4-5', col6: 'Data 4-6' },
+    { id: 5, col1: 'Data 5-1', col2: 'Data 5-2', col3: 'Data 5-3', col4: 'Data 5-4', col5: 'Data 5-5', col6: 'Data 5-6' },
+  ];
+
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
+
+  // Function to handle selected rows from DaTable
+  const handleSelectedRowsChange = (selectedIds) => {
+    setSelectedRowIds(selectedIds);
+  };
+
+  // Function triggered by the button to log specific column data based on selected rows
+  const logSelectedData = () => {
+    if (selectedRowIds.length === tableData.length) {
+      let selectedAcc = tableData.map(item => item.col1).join(', ');
+      console.log('selectedAcc: ', selectedAcc);
+    } else {
+        let aa1 = [];
+        selectedRowIds.forEach(rowId => {
+          const row = tableData.find(item => item.id === rowId);
+          aa1.push(row);
+        });
+        
+          let selectedAcc = aa1.map(item => item.col1).join(', ');
+          console.log('selectedAcc: ', selectedAcc);  
+    }
+  };
+
+  return (
+    <div className="App">
+      <DaTable data={tableData} onSelectedRowsChange={handleSelectedRowsChange} />
+      <Button onClick={logSelectedData} variant="primary" className="mt-3">Log Selected Data</Button>
+    </div>
+  );
+
+///================
 import React, { useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
 
