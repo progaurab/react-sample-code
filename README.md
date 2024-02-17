@@ -1,6 +1,90 @@
 ```javascript
 
 
+import React, { useState } from 'react';
+import { Table, Form } from 'react-bootstrap';
+
+const DaTable = ({ data, onSelectedRowsChange }) => {
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
+
+  const toggleSelectAll = (isSelectAll) => {
+    if (isSelectAll) {
+      const allIds = data.map(item => item.id);
+      setSelectedRowIds(allIds);
+      onSelectedRowsChange(allIds);
+    } else {
+      setSelectedRowIds([]);
+      onSelectedRowsChange([]);
+    }
+  };
+
+  const handleSelectAllChange = () => {
+    const isCurrentlySelectedAll = selectedRowIds.length === data.length;
+    toggleSelectAll(!isCurrentlySelectedAll);
+  };
+
+  const handleRowCheckboxChange = (id) => {
+    const newSelectedRowIds = selectedRowIds.includes(id) ?
+      selectedRowIds.filter(rowId => rowId !== id) :
+      [...selectedRowIds, id];
+    setSelectedRowIds(newSelectedRowIds);
+    onSelectedRowsChange(newSelectedRowIds);
+  };
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>
+            <Form.Check
+              type="checkbox"
+              checked={selectedRowIds.length === data.length}
+              onChange={handleSelectAllChange}
+            />
+          </th>
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <th>Column 3</th>
+          <th>Column 4</th>
+          <th>Column 5</th>
+          <th>Column 6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id}>
+            <td>
+              <Form.Check
+                type="checkbox"
+                checked={selectedRowIds.includes(row.id)}
+                onChange={() => handleRowCheckboxChange(row.id)}
+              />
+            </td>
+            <td>{row.col1}</td>
+            <td>{row.col2}</td>
+            <td>{row.col3}</td>
+            <td>{row.col4}</td>
+            <td>{row.col5}</td>
+            <td>{row.col6}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default DaTable;
+
+
+
+
+
+
+
+
+
+//===========================
+
 import React, { useState, useEffect } from 'react';
 import { Table, Form } from 'react-bootstrap';
 
