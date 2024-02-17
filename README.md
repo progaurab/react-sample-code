@@ -1,4 +1,53 @@
 ```javascript
+
+import React from 'react';
+import { Accordion, Card, Table, Form } from 'react-bootstrap';
+
+const DaTable = ({ data, setSelectedRows }) => {
+  // Assuming the rest of your DaTable implementation remains the same
+
+  return (
+    <Accordion defaultActiveKey="0">
+      <Card>
+        <Accordion.Toggle as={Card.Header} eventKey="0">
+          Click me!
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="0">
+          <Card.Body>
+            {/* Wrap the table in a div for horizontal scrolling */}
+            <div style={{ overflowX: 'auto' }}>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th><Form.Check type="checkbox" /* Your select all checkbox logic */ /></th>
+                    <th>Col1</th>
+                    {/* Add more columns as needed */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((row, index) => (
+                    <tr key={index}>
+                      <td><Form.Check type="checkbox" /* Your row selection logic */ /></td>
+                      <td>{row.col1}</td>
+                      {/* Render other columns */}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+    </Accordion>
+  );
+};
+
+export default DaTable;
+
+
+
+
+//_________
   import React, { useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
 
