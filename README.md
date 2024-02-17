@@ -1,4 +1,151 @@
 ```javascript
+  import React, { useState } from 'react';
+import { Table, Form } from 'react-bootstrap';
+
+const DaTable = ({ data, setSelectedRows }) => {
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Toggle selection for all rows
+  const handleSelectAllChange = () => {
+    if (selectAll) {
+      setSelectedRowIds([]);
+      setSelectedRows([]); // Notify parent component
+    } else {
+      const allIds = data.map((_, index) => index + 1); // Using index + 1 as id
+      setSelectedRowIds(allIds);
+      setSelectedRows(allIds); // Notify parent component
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // Toggle selection for individual rows
+  const handleRowCheckboxChange = (id) => {
+    const newSelectedRowIds = selectedRowIds.includes(id)
+      ? selectedRowIds.filter(rowId => rowId !== id)
+      : [...selectedRowIds, id];
+
+    setSelectedRowIds(newSelectedRowIds);
+    setSelectedRows(newSelectedRowIds); // Notify parent component
+
+    // Adjust 'selectAll' based on current selection
+    setSelectAll(newSelectedRowIds.length === data.length);
+  };
+
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>
+            <Form.Check
+              type="checkbox"
+              checked={selectAll}
+              onChange={handleSelectAllChange}
+            />
+          </th>
+          <th>Col1</th><th>Col2</th><th>Col3</th><th>Col4</th><th>Col5</th><th>Col6</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, index) => (
+          <tr key={index}>
+            <td>
+              <Form.Check
+                type="checkbox"
+                checked={selectedRowIds.includes(index + 1)} // Using index + 1 to match id
+                onChange={() => handleRowCheckboxChange(index + 1)} // Using index + 1 as id
+              />
+            </td>
+            <td>{row.col1}</td>
+            <td>{row.col2}</td>
+            <td>{row.col3}</td>
+            <td>{row.col4}</td>
+            <td>{row.col5}</td>
+            <td>{row.col6}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export default DaTable;
+
+```
+
+
+```javascript
+import React, { useState } from 'react';
+import DaTable from './DaTable';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from 'react-bootstrap';
+
+const App = () => {
+  const tableData =[
+    [
+      { col1: 'NData1', col2: 'NData1', col3: 'NData1', col4: 'NData1', col5: 'NData1', col6: 'NData1' },
+      { col1: 'NData2', col2: 'NData2', col3: 'NData2', col4: 'NData2', col5: 'NData2', col6: 'NData2' },
+      { col1: 'NData3', col2: 'NData3', col3: 'NData3', col4: 'NData3', col5: 'NData3', col6: 'NData3' },
+      { col1: 'NData4', col2: 'NData4', col3: 'NData4', col4: 'NData4', col5: 'NData4', col6: 'NData4' },
+      { col1: 'NData5', col2: 'NData5', col3: 'NData5', col4: 'NData5', col5: 'NData5', col6: 'NData5' },
+    ],
+    [
+      { col1: 'PData1', col2: 'PData1', col3: 'PData1', col4: 'PData1', col5: 'PData1', col6: 'PData1' },
+      { col1: 'PData2', col2: 'PData2', col3: 'PData2', col4: 'PData2', col5: 'PData2', col6: 'PData2' },
+      { col1: 'PData3', col2: 'PData3', col3: 'PData3', col4: 'PData3', col5: 'PData3', col6: 'PData3' },
+      { col1: 'PData4', col2: 'PData4', col3: 'PData4', col4: 'PData4', col5: 'PData4', col6: 'PData4' },
+      { col1: 'PData5', col2: 'PData5', col3: 'PData5', col4: 'PData5', col5: 'PData5', col6: 'PData5' },
+    ]
+]
+
+  const [selectedNonPersonalRows, setSelectedNonPersonalRows] = useState([]);
+  const [selectedPersonalRows, setSelectedPersonalRows] = useState([]);
+
+  const logSelectedRowsData = () => {
+    let selectedData = [];
+
+    // Log selected Non-Personal Data
+    if (selectedNonPersonalRows.length) {
+      selectedData.push(tableData[0].filter((_, index) => selectedNonPersonalRows.includes(index + 1)).map(item => item.col1));
+    } else {
+      selectedData.push([]);
+    }
+
+    // Log selected Personal Data
+    if (selectedPersonalRows.length) {
+      selectedData.push(tableData[1].filter((_, index) => selectedPersonalRows.includes(index + 1)).map(item => item.col1));
+    } else {
+      selectedData.push([]);
+    }
+
+    console.log(selectedData);
+  };
+
+  return (
+    <div className="App">
+      <h2>Non Personal</h2>
+      <DaTable data={tableData[0]} setSelectedRows={setSelectedNonPersonalRows} />
+      <h2>Personal</h2>
+      <DaTable data={tableData[1]} setSelectedRows={setSelectedPersonalRows} />
+      <Button onClick={logSelectedRowsData} variant="primary" className="mt-3">Log Selected Data</Button>
+    </div>
+  );
+};
+
+export default App;
+
+
+```
+
+
+
+
+
+
+
+
+# ========================================= ******** =========================================
+```javascript
 
 
 const App = () => {
