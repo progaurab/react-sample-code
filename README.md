@@ -1,5 +1,55 @@
 ```javascript
 
+
+import React from 'react';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
+const App = () => {
+  // Your existing code, including tableData and any state/hooks
+
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet1 = workbook.addWorksheet('exceldata1');
+    const worksheet2 = workbook.addWorksheet('exceldata2');
+
+    // Assuming all rows have the same columns, use the keys from the first row for headers
+    const headers = Object.keys(tableData[0][0]);
+
+    // Set headers for each worksheet
+    worksheet1.addRow(headers);
+    worksheet2.addRow(headers);
+
+    // Add data rows to each worksheet
+    tableData[0].forEach(row => {
+      worksheet1.addRow(Object.values(row));
+    });
+
+    tableData[1].forEach(row => {
+      worksheet2.addRow(Object.values(row));
+    });
+
+    // Use exceljs and file-saver to generate and save the Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const fileExtension = '.xlsx';
+
+    const blob = new Blob([buffer], {type: fileType});
+    saveAs(blob, 'exportedData' + fileExtension);
+  };
+
+  return (
+    <div>
+      {/* Your existing JSX, such as the tables and any other components */}
+      <button onClick={exportToExcel}>Log Selected Data</button>
+    </div>
+  );
+};
+
+export default App;
+
+//=========================
+
 import React from 'react';
 import { Accordion, Card, Table, Form } from 'react-bootstrap';
 
