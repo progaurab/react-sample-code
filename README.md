@@ -2,6 +2,71 @@
 
 const exportToExcel = async (tableData) => {
     const workbook = new ExcelJS.Workbook();
+    const tabNames = ['Non-Personal', 'Personal', 'Luxary', 'AdAzure', 'justSomething'];
+    const currencyColumns = {
+      'Non-Personal': ['col2'],
+      'Personal': ['col55'],
+    };
+    const numberColumns = {
+      'Personal': ['col12'],
+      'AdAzure': ['col_33'],
+      'justSomething': ['col_33'],
+    };
+  
+    tableData.forEach((dataSegment, index) => {
+      const worksheet = workbook.addWorksheet(tabNames[index]);
+  
+      // Set headers based on the keys of the first object in the data segment
+      const headers = Object.keys(dataSegment[0]).map(key => {
+        return { header: key, key, width: key.length < 10 ? 10 : key.length }; // Set column width based on key length
+      });
+  
+      worksheet.columns = headers;
+  
+      // Apply styles and formats to headers
+      worksheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFF' } };
+      worksheet.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: '4F81BD' }, // Header background color
+      };
+      worksheet.autoFilter = {
+        from: 'A1',
+        to: `${String.fromCharCode(64 + headers.length)}1`,
+      };
+  
+      // Adding data rows and applying specific formats
+      dataSegment.forEach(row => {
+        const rowValues = Object.values(row);
+        const excelRow = worksheet.addRow(rowValues); // Corrected to use rowValues
+      
+        // Apply currency format to specified columns
+        currencyColumns[tabNames[index]]?.forEach(colKey => {
+          const colIndex = Object.keys(row).indexOf(colKey) + 1;
+          if (colIndex > 0) {
+            excelRow.getCell(colIndex).numFmt = '$#,##0.00';
+          }
+        });
+      
+        // Apply number format to specified columns
+        numberColumns[tabNames[index]]?.forEach(colKey => {
+          const colIndex = Object.keys(row).indexOf(colKey) + 1;
+          if (colIndex > 0) {
+            excelRow.getCell(colIndex).numFmt = '#,##0';
+          }
+        });
+      });
+    });
+  
+    // Generate and save Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, 'exportedData.xlsx');
+  };
+
+////=======
+const exportToExcel = async (tableData) => {
+    const workbook = new ExcelJS.Workbook();
   
     tableData.forEach((dataSegment, index) => {
       // Create a worksheet for each data segment
