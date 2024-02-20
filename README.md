@@ -1,6 +1,46 @@
 ```javascript
 
+const exportToExcel = async (tableData) => {
+    const workbook = new ExcelJS.Workbook();
+  
+    tableData.forEach((dataSegment, index) => {
+      // Create a worksheet for each data segment
+      const worksheet = workbook.addWorksheet(`exportdata${index + 1}`);
+  
+      // Assuming all rows have the same columns, use the keys from the first row for headers
+      const headers = Object.keys(dataSegment[0]).map(key => ({ header: key, key, filter: true }));
+  
+      // Apply headers with styling and filters
+      worksheet.columns = headers;
+      worksheet.getRow(1).font = { bold: true };
+      worksheet.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF4F81BD' }, // Blue color
+      };
+  
+      // Add data rows
+      dataSegment.forEach(row => {
+        worksheet.addRow(row);
+      });
+  
+      // Enable filters for each column
+      worksheet.autoFilter = {
+        from: 'A1',
+        to: `${String.fromCharCode(64 + headers.length)}1`,
+      };
+    });
+  
+    // Use exceljs to generate and save the Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const fileExtension = '.xlsx';
+  
+    const blob = new Blob([buffer], { type: fileType });
+    saveAs(blob, 'exportedData' + fileExtension);
+  };
 
+//---------------------------
 import React from 'react';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
