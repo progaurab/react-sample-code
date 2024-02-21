@@ -1,5 +1,32 @@
 ```javascript
 
+dataSegment.forEach(row => {
+  // Add row values
+  const rowValues = Object.values(row);
+  worksheet.addRow(rowValues);
+
+  // No changes needed here for formatting
+});
+
+// After adding all rows, adjust column widths based on content
+worksheet.columns.forEach(column => {
+  let maxLength = 0;
+
+  // Calculate the max length of data in each column
+  column.eachCell({ includeEmpty: true }, cell => {
+    let textLength = cell.value ? cell.value.toString().length : 0;
+    if (textLength > maxLength) {
+      maxLength = textLength;
+    }
+  });
+
+  // Set the column width with a little extra padding
+  column.width = maxLength < 10 ? 10 : maxLength + 2;
+});
+
+
+//--+++
+
 const exportToExcel = async (tableData) => {
     const workbook = new ExcelJS.Workbook();
     const tabNames = ['Non-Personal', 'Personal', 'Luxary', 'AdAzure', 'justSomething'];
